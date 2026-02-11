@@ -1,0 +1,21 @@
+/* Global font loading and defaults */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+
+:root {
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-weight: 700; /* heavier global baseline */
+}
+
+*,
+*::before,
+*::after {
+  font-family: inherit;
+  font-weight: inherit;
+}
+
+body {
+  font-family: inherit;
+  font-weight: inherit;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
