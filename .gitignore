@@ -1,0 +1,43 @@
+# Dependencies
+node_modules/
+*/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Production Build Outputs
+dist/
+dist-ssr/
+*.local
+AT/dist/
+admin/dist/
+
+# Environment Variables & Secrets
+.env
+.env.*
+!.env.example
+AT/.env
+admin/.env
+
+# Logs & Run-time data
+logs
+*.log
+npm-debug.log*
+server.err.log
+server.out.log
+AT/server.err.log
+AT/server.out.log
+
+# Uploaded Media in development
+AT/server/uploads/*
+!AT/server/uploads/.gitkeep
+
+# IDE & OS Files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+.agents/
+.codex/

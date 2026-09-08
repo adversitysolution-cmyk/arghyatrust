@@ -3,7 +3,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { Card } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
-import { Calendar, MapPin, Users, Clock, ExternalLink, ArrowRight } from 'lucide-react';
+import { Calendar, MapPin, Users, Clock, ArrowRight } from 'lucide-react';
 import { motion } from 'motion/react';
 import { Link } from 'react-router-dom';
 import durgaImg from '../../assets/devii.jpg';
@@ -11,14 +11,21 @@ import shatachandiImg from '../../assets/devii1.jpg';
 import cardImg1 from '../../assets/1U.jpg';
 import cardImg2 from '../../assets/2U.jpg';
 import cardImg3 from '../../assets/3U.jpg';
-import durgaJapaPdf from '../../assets/DurgaJapa.pdf';
-import shatachandiPdf from '../../assets/Shatachandi.pdf';
 import swacchImg from '../../assets/10.jpg';
 import beMakeImg from '../../assets/20.jpeg';
 import sustainabilityCirclesImg from '../../assets/30.jpg';
+import sectionBackground from '../../assets/back.jpg';
 
 export function EventsPage() {
   const { t } = useLanguage();
+  const pageBackgroundStyle = {
+    backgroundImage: `url(${sectionBackground})`,
+    backgroundSize: '100% 100%',
+    backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat',
+    backgroundAttachment: 'fixed',
+  } as const;
+  const transparentSectionClass = '!bg-transparent';
 
   const upcomingEvents = [
     {
@@ -62,7 +69,6 @@ export function EventsPage() {
     },
   ];
 
-  const featuredEvents = upcomingEvents.slice(0, 2);
   const upcomingList = upcomingEvents.slice(2);
 
   const pastEvents = [
@@ -109,9 +115,9 @@ export function EventsPage() {
   ];
 
   return (
-    <div className="min-h-screen pt-20">
+    <div className="min-h-screen pt-20" style={pageBackgroundStyle}>
       {/* Hero Section */}
-      <Section background="green" className="py-24 md:py-32">
+      <Section background="green" className={`${transparentSectionClass} py-24 md:py-32`}>
         <div className="text-center max-w-3xl mx-auto">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
@@ -140,78 +146,13 @@ export function EventsPage() {
         </div>
       </Section>
 
-      {/* Featured Events */}
-      <Section background="white">
-        <div className="space-y-6 max-w-5xl mx-auto">
-          {featuredEvents.map((event, idx) => (
-            <Card key={idx} className="events-card overflow-hidden border-2 border-green-200 h-full">
-              <div className="grid md:grid-cols-2 h-full">
-                <div className="w-full h-full min-h-[110px] md:min-h-[130px]">
-                  <img
-                    src={event.image}
-                    alt={event.title}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <div className="p-6 md:p-8 flex flex-col justify-center">
-                  <Badge className="bg-red-100 text-red-700 w-fit mb-4">Featured Event</Badge>
-                  <h2 className="text-3xl md:text-4xl font-bold mb-4">{event.title}</h2>
-                  <p className="text-gray-600 mb-6 text-lg">{event.description}</p>
-                  <div className="space-y-3 mb-6">
-                    <div className="flex items-center gap-3 text-gray-700">
-                      <Calendar className="w-5 h-5 text-[#50b94b]" />
-                      <span>{event.date}</span>
-                    </div>
-                    <div className="flex items-center gap-3 text-gray-700">
-                      <MapPin className="w-5 h-5 text-[#50b94b]" />
-                      <span>{event.location}</span>
-                    </div>
-                  </div>
-                  <div className="flex flex-wrap gap-3">
-                    <Link to={event.registrationLink}>
-                      <Button size="lg" className="bg-[#50b94b] hover:bg-[#45a340]">
-                        Register Now
-                        <ExternalLink className="ml-2 w-5 h-5" />
-                      </Button>
-                    </Link>
-                    {idx === 0 && (
-                      <a
-                        href={durgaJapaPdf}
-                        download
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <Button variant="outline" size="lg" className="border-[#123c7c] text-[#123c7c] hover:bg-gray-50">
-                          Download Invitation
-                        </Button>
-                      </a>
-                    )}
-                    {idx === 1 && (
-                      <a
-                        href={shatachandiPdf}
-                        download
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <Button variant="outline" size="lg" className="border-[#123c7c] text-[#123c7c] hover:bg-gray-50">
-                          Download Invitation
-                        </Button>
-                      </a>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </Card>
-          ))}
-        </div>
-      </Section>
-
       {/* Upcoming Events */}
       <Section
         eyebrow={t('events.upcoming.eyebrow')}
         title={t('events.upcoming')}
         centered
         background="gray"
+        className={transparentSectionClass}
       >
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {upcomingList.map((event, index) => (
@@ -263,6 +204,7 @@ export function EventsPage() {
         title={t('events.past')}
         centered
         background="white"
+        className={transparentSectionClass}
       >
         <div className="grid md:grid-cols-3 gap-6">
           {pastEvents.map((event, index) => (
@@ -314,6 +256,7 @@ export function EventsPage() {
         title={t('events.impact.title')}
         centered
         background="green"
+        className={transparentSectionClass}
       >
         <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
           <Card className="events-card p-6 text-center">
@@ -337,6 +280,7 @@ export function EventsPage() {
         title={t('events.testimonials.title')}
         centered
         background="white"
+        className={transparentSectionClass}
       >
         <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
           {participantTestimonials.map((testimonial, index) => (
@@ -357,8 +301,8 @@ export function EventsPage() {
       </Section>
 
       {/* CTA */}
-      <Section background="gray">
-        <div className="text-center bg-gradient-to-br from-[#50b94b] to-[#45a340] rounded-3xl p-12 text-white">
+      <Section background="gray" className={transparentSectionClass}>
+        <div className="text-center rounded-3xl border border-[#50b94b]/20 bg-gradient-to-br from-[#50b94b]/40 to-[#45a340]/40 p-12 text-white shadow-[0_18px_50px_rgba(80,185,75,0.14)]">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">{t('events.participate')}</h2>
           <p className="text-lg mb-8 text-green-50 max-w-2xl mx-auto">
             {t('events.cta.desc')}

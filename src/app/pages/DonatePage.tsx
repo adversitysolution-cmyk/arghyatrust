@@ -5,6 +5,7 @@ import { Button } from '../components/ui/button';
 import { Heart, Shield, Users, BookOpen, TreePine, Sparkles, Building2, CheckCircle2 } from 'lucide-react';
 import qrImage from '../../assets/qr.jpg';
 import { motion } from 'motion/react';
+import sectionBackground from '../../assets/back.jpg';
 
 export function DonatePage() {
   const { t } = useLanguage();
@@ -67,10 +68,20 @@ export function DonatePage() {
     'donate.transparency.point5',
   ];
 
+  const pageBackgroundStyle = {
+    backgroundImage: `url(${sectionBackground})`,
+    backgroundSize: '100% 100%',
+    backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat',
+    backgroundAttachment: 'fixed',
+  } as const;
+
+  const transparentSectionClass = '!bg-transparent';
+
   return (
-    <div className="min-h-screen pt-20">
+    <div className="min-h-screen pt-20" style={pageBackgroundStyle}>
       {/* Hero Section */}
-      <Section background="green" className="py-24 md:py-32">
+      <Section background="green" className={`${transparentSectionClass} py-24 md:py-32`}>
         <div className="text-center max-w-3xl mx-auto">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
@@ -105,6 +116,7 @@ export function DonatePage() {
         title={t('donate.why')}
         centered
         background="white"
+        className={transparentSectionClass}
       >
         <div className="grid md:grid-cols-3 gap-6">
           <Card className="donate-card p-6 text-center hover:shadow-xl transition-all">
@@ -145,6 +157,7 @@ export function DonatePage() {
         title={t('donate.allocation.title')}
         centered
         background="gray"
+        className={transparentSectionClass}
       >
         <div className="grid md:grid-cols-2 gap-6">
           {impactAreas.map((area, index) => (
@@ -186,6 +199,7 @@ export function DonatePage() {
         title={t('donate.amount')}
         centered
         background="white"
+        className={transparentSectionClass}
       >
         <Card className="p-8 max-w-2xl mx-auto border-2 border-green-100">
           <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
@@ -258,6 +272,7 @@ export function DonatePage() {
         title={t('donate.impact')}
         centered
         background="green"
+        className={transparentSectionClass}
       >
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
           {impactExamples.map((example, index) => (
@@ -283,6 +298,7 @@ export function DonatePage() {
         title={t('donate.transparency')}
         centered
         background="white"
+        className={transparentSectionClass}
       >
         <div className="max-w-2xl mx-auto">
           <div className="space-y-3">
@@ -309,6 +325,7 @@ export function DonatePage() {
         title={t('donate.testimonials.title')}
         centered
         background="gray"
+        className={transparentSectionClass}
       >
         <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
           {testimonials.map((testimonial, index) => (

@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Globe, Menu, X } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { Button } from './ui/button';
 import logoImage from '../../assets/logooo.png';
 
 export function Header() {
-  const { language, toggleLanguage, t } = useLanguage();
+  const { t, language, toggleLanguage } = useLanguage();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
@@ -24,7 +24,7 @@ export function Header() {
     { path: '/about', label: t('nav.about') },
     { path: '/donate', label: t('nav.donate') },
     { path: '/events', label: t('nav.events') },
-    { path: '/gallery', label: 'Gallery' },
+    { path: '/gallery', label: t('nav.gallery') },
     { path: '/blog', label: t('nav.blog') },
     { path: '/contact', label: t('nav.contact') },
   ];
@@ -68,17 +68,14 @@ export function Header() {
 
           {/* Right Section */}
           <div className="flex items-center gap-4">
-            {/* Language Toggle */}
-            <button
+            <Button
+              type="button"
+              variant="outline"
               onClick={toggleLanguage}
-              className="flex items-center gap-2 px-3 py-2 rounded-full border border-gray-300 hover:border-[#50b94b] transition-all hover:bg-green-50"
-              aria-label="Toggle language"
+              className="hidden md:inline-flex border-[#50b94b] text-[#50b94b] hover:bg-green-50"
             >
-              <Globe className="w-4 h-4 text-[#50b94b]" />
-              <span className="text-sm font-medium">
-                {language === 'en' ? 'EN' : 'ಕನ್ನಡ'}
-              </span>
-            </button>
+              {language === 'en' ? 'ಕನ್ನಡ' : 'English'}
+            </Button>
 
             {/* Donate Button */}
             <Link to="/donate" className="hidden md:block">
@@ -125,6 +122,16 @@ export function Header() {
                   {t('common.donate')}
                 </Button>
               </Link>
+              <button
+                type="button"
+                onClick={() => {
+                  toggleLanguage();
+                  setIsMobileMenuOpen(false);
+                }}
+                className="mx-4 mt-2 rounded-lg border border-[#50b94b] px-4 py-2 font-medium text-[#50b94b] hover:bg-green-50"
+              >
+                {language === 'en' ? 'ಕನ್ನಡ' : 'English'}
+              </button>
             </nav>
           </div>
         )}
@@ -132,3 +139,5 @@ export function Header() {
     </header>
   );
 }
+
+

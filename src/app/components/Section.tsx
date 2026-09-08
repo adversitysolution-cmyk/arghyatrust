@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { CSSProperties, ReactNode } from 'react';
 import { motion } from 'motion/react';
 import { useInView } from 'motion/react';
 import { useRef } from 'react';
@@ -6,6 +6,7 @@ import { useRef } from 'react';
 interface SectionProps {  
   children: ReactNode;
   className?: string;
+  style?: CSSProperties;
   eyebrow?: string;
   title?: string;
   description?: string;
@@ -16,6 +17,7 @@ interface SectionProps {
 export function Section({
   children,
   className = '',
+  style,
   eyebrow,
   title,
   description,
@@ -32,7 +34,7 @@ export function Section({
   }[background];
 
   return (
-    <section ref={ref} className={`py-16 md:py-24 ${bgClass} ${className}`}>
+    <section ref={ref} style={style} className={`py-[50px] md:py-[80px] ${bgClass} ${className}`}>
       <div className="container mx-auto px-4 max-w-[1200px]">
         {(eyebrow || title || description) && (
           <motion.div
@@ -47,12 +49,12 @@ export function Section({
               </span>
             )}
             {title && (
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
+              <h2 className="text-3xl md:text-4xl font-semibold text-gray-900 mb-4">
                 {title}
               </h2>
             )}
             {description && (
-              <p className="text-lg text-gray-600 leading-relaxed">
+              <p className="text-base md:text-lg text-gray-600 leading-relaxed">
                 {description}
               </p>
             )}

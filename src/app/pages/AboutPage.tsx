@@ -10,7 +10,7 @@ import trustee3 from '../../assets/T3.jpg';
 import trustee4 from '../../assets/T4.jpg';
 import trustee5 from '../../assets/T5.jpg';
 import logoEnglish from '../../assets/logo3s.jpg';
-import logoKannada from '../../assets/Logokan.jpg';
+import logoKannada from '../../assets/Logokan.jpeg';
 import logoMeaning from '../../assets/meaning.jpg';
 import founderImage from '../../assets/founder.JPG';
 import work1 from '../../assets/F1.jpg';
@@ -19,9 +19,16 @@ import work3 from '../../assets/F3.jpg';
 import work4 from '../../assets/f4.jpg';
 import work5 from '../../assets/F5.jpg';
 import work6 from '../../assets/F6.jpg';
+import compassionImage from '../../assets/Compassion.png';
+import excellenceImage from '../../assets/Excellence.jpg';
+import communityImage from '../../assets/Community.jpg';
+import learningImage from '../../assets/learning.jpg';
+import purposeImage from '../../assets/purpose.png';
+import transparencyImage from '../../assets/Transparency.png';
+import sectionBackground from '../../assets/back.jpg';
 
 export function AboutPage() {
-  const { t, toggleLanguage, language } = useLanguage();
+  const { t } = useLanguage();
 
   const arghyaMeaning = [
     { letter: 'A', meaningKey: 'about.arghya.a' },
@@ -34,32 +41,32 @@ export function AboutPage() {
 
   const values = [
     {
-      image: work1, // compassion
+      image: compassionImage,
       titleKey: 'about.values.compassion.title',
       descKey: 'about.values.compassion.desc',
     },
     {
-      image: work2, // excellence
+      image: excellenceImage,
       titleKey: 'about.values.excellence.title',
       descKey: 'about.values.excellence.desc',
     },
     {
-      image: work3, // community
+      image: communityImage,
       titleKey: 'about.values.community.title',
       descKey: 'about.values.community.desc',
     },
     {
-      image: work4, // learning
+      image: learningImage,
       titleKey: 'about.values.learning.title',
       descKey: 'about.values.learning.desc',
     },
     {
-      image: work5, // purpose
+      image: purposeImage,
       titleKey: 'about.values.purpose.title',
       descKey: 'about.values.purpose.desc',
     },
     {
-      image: work6, // transparency
+      image: transparencyImage,
       titleKey: 'about.values.transparency.title',
       descKey: 'about.values.transparency.desc',
     },
@@ -102,12 +109,22 @@ export function AboutPage() {
     },
   ];
 
+  const pageBackgroundStyle = {
+    backgroundImage: `url(${sectionBackground})`,
+    backgroundSize: '100% 100%',
+    backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat',
+    backgroundAttachment: 'fixed',
+  } as const;
+
+  const transparentSectionClass = '!bg-transparent';
+
   return (
-    <div className="min-h-screen pt-20">
+    <div className="min-h-screen pt-20" style={pageBackgroundStyle}>
       {/* Hero Section */}
       <Section
         background="green"
-        className="py-24 md:py-32"
+        className={`${transparentSectionClass} py-24 md:py-32`}
       >
         <div className="text-center max-w-4xl mx-auto">
           <motion.div
@@ -138,34 +155,34 @@ export function AboutPage() {
       </Section>
 
       {/* Vision & Mission */}
-      <Section background="white">
+      <Section background="white" className={transparentSectionClass}>
         <div className="grid md:grid-cols-2 gap-8">
-          <Card className="about-card relative overflow-hidden p-10 bg-white rounded-3xl shadow-lg border border-gray-100">
-            <div className="absolute -top-6 -right-6 w-28 h-28 rounded-full bg-gradient-to-br from-[#3ac36d] to-[#9be2ba]" />
-            <h2 className="text-3xl font-extrabold mb-4 text-[#123c7c] text-center">{t('about.vision')}</h2>
-            <p className="text-gray-700 leading-relaxed font-semibold text-left">
+          <Card className="about-card vm-card relative overflow-hidden p-10 bg-white rounded-3xl shadow-lg border border-gray-100">
+            <div className="vm-accent-circle absolute -top-6 -right-6 w-28 h-28 rounded-full bg-gradient-to-br from-[#3ac36d] to-[#9be2ba]" />
+            <h2 className="text-3xl font-bold mb-4 text-[#123c7c] text-center">{t('about.vision')}</h2>
+            <p className="text-gray-700 leading-relaxed text-left">
               {t('about.vision.desc')}
             </p>
           </Card>
 
-          <Card className="about-card relative overflow-hidden p-10 bg-white rounded-3xl shadow-lg border border-gray-100">
-            <div className="absolute -top-6 -right-6 w-28 h-28 rounded-full bg-gradient-to-br from-[#3ac36d] to-[#9be2ba]" />
-            <h2 className="text-3xl font-extrabold mb-4 text-[#123c7c] text-center">{t('about.mission')}</h2>
-            <ul className="space-y-4 text-gray-700 text-left font-semibold">
+          <Card className="about-card vm-card relative overflow-hidden p-10 bg-white rounded-3xl shadow-lg border border-gray-100">
+            <div className="vm-accent-circle absolute -top-6 -right-6 w-28 h-28 rounded-full bg-gradient-to-br from-[#3ac36d] to-[#9be2ba]" />
+            <h2 className="text-3xl font-bold mb-4 text-[#123c7c] text-center">{t('about.mission')}</h2>
+            <ul className="space-y-4 text-gray-700 text-left">
               <li className="flex gap-3">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#1fa56a] mt-2" />
+                <span className="vm-bullet w-2.5 h-2.5 rounded-full bg-[#1fa56a] mt-2" />
                 <span>{t('about.mission.point1')}</span>
               </li>
               <li className="flex gap-3">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#1fa56a] mt-2" />
+                <span className="vm-bullet w-2.5 h-2.5 rounded-full bg-[#1fa56a] mt-2" />
                 <span>{t('about.mission.point2')}</span>
               </li>
               <li className="flex gap-3">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#1fa56a] mt-2" />
+                <span className="vm-bullet w-2.5 h-2.5 rounded-full bg-[#1fa56a] mt-2" />
                 <span>{t('about.mission.point3')}</span>
               </li>
               <li className="flex gap-3">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#1fa56a] mt-2" />
+                <span className="vm-bullet w-2.5 h-2.5 rounded-full bg-[#1fa56a] mt-2" />
                 <span>{t('about.mission.point4')}</span>
               </li>
             </ul>
@@ -177,6 +194,7 @@ export function AboutPage() {
         title={t('about.arghya.title')}
         centered
         background="gray"
+        className={transparentSectionClass}
       >
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {arghyaMeaning.map((item, index) => (
@@ -187,7 +205,7 @@ export function AboutPage() {
               transition={{ delay: index * 0.05, duration: 0.4 }}
               viewport={{ once: true }}
             >
-              <Card className="p-8 bg-white rounded-3xl border border-gray-100 shadow-md hover:shadow-lg transition-all h-full">
+              <Card className="group p-8 bg-white rounded-3xl border border-gray-100 shadow-md hover:shadow-lg transition-all h-full">
                 {(() => {
                   const phrase = t(item.meaningKey);
                   const [firstWord, ...rest] = phrase.split(' ');
@@ -195,10 +213,10 @@ export function AboutPage() {
                   const description = phrase; // keep full phrase so description starts with the key word
                   return (
                     <div className="flex items-start gap-4 h-full">
-                      <span className="text-6xl font-semibold text-gray-400 leading-none">{item.letter}</span>
+                      <span className="text-6xl font-semibold text-[#50b94b] group-hover:text-[#ec1d23] transition-colors leading-none">{item.letter}</span>
                       <div className="space-y-2">
-                        <h3 className="text-2xl font-extrabold text-[#123c7c] mb-2">{title}</h3>
-                        <p className="text-gray-700 leading-relaxed font-semibold">{description}</p>
+                        <h3 className="text-2xl font-bold text-[#123c7c] mb-2">{title}</h3>
+                        <p className="text-gray-700 leading-relaxed">{description}</p>
                       </div>
                     </div>
                   );
@@ -212,29 +230,51 @@ export function AboutPage() {
 {/* Trust Logo */}
 
       <Section
-        title="Trust Logo"
         centered
         background="gray"
+        className={transparentSectionClass}
       >
-        <div className="bg-white/90 rounded-3xl shadow-md border border-gray-200 p-8 md:p-12 max-w-5xl mx-auto space-y-6">
+        <div className="text-center mt-14 mb-6">
+          <span className="inline-block px-4 py-1.5 rounded-full bg-[#50b94b]/10 text-[#50b94b] text-sm font-semibold mb-4">
+            Brand Identity
+          </span>
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900">
+            Symbol of Trust & Purpose
+          </h2>
+        </div>
+
+        <div className="p-8 md:p-12 max-w-5xl mx-auto space-y-6">
           <p className="text-lg md:text-xl text-gray-800 leading-relaxed text-center">
-            The logo of <span className="font-semibold">Arghya Trust</span> beautifully integrates the three core values — <span className="font-semibold">Self-Excellence, Sustainability,</span> and <span className="font-semibold">Spirituality</span>. The graceful form inspired by the Kannada letter “?” represents <span className="font-semibold">Self-Excellence (Akshara)</span> — the awakening of human potential and the pursuit of one’s highest possibilities through Education. The <span className="font-semibold">Green Leaf</span> stands for <span className="font-semibold">Sustainability (Abhirudhi)</span> — our deep commitment to living in harmony with nature, conserving resources, and nurturing life. The <span className="font-semibold">Red Dot (Bindhu)</span> symbolizes <span className="font-semibold">Spirituality (Adhyatma)</span> — a symbol of inner consciousness that connects every being to the Divine or Maha Devi.
+            The Arghya Trust logo represents three guiding values: Self-Excellence, Sustainability, and Spirituality.
           </p>
+          <ul className="max-w-4xl mx-auto text-left space-y-3 text-gray-800">
+            <li className="flex gap-3">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#50b94b] mt-2" />
+              <span>The Akshara-inspired form represents self-excellence through knowledge, discipline, and personal growth.</span>
+            </li>
+            <li className="flex gap-3">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#50b94b] mt-2" />
+              <span>The green leaf represents sustainability through environmental care and responsible community action.</span>
+            </li>
+            <li className="flex gap-3">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#50b94b] mt-2" />
+              <span>The red bindhu represents spirituality and inner awareness that shape values-based service.</span>
+            </li>
+          </ul>
           <p className="text-lg md:text-xl text-gray-800 leading-relaxed text-center">
-            Together, these elements reflect the essence of <span className="font-semibold">Arghya</span> — an offering of one’s best self to the world and to the Divine. The logo conveys the Trust’s vision to transform individuals and communities through education, ecological balance, and spiritual harmony — building a world rooted in excellence, service, and peace.
+            Together, these symbols communicate our commitment to transformative education, social responsibility, and value-driven leadership.
           </p>
 
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="rounded-2xl border border-gray-200 shadow-sm bg-white p-4 flex justify-center">
-              <img src={logoEnglish} alt="Arghya Trust English Logo" className="w-full h-auto max-h-64 object-contain" />
+          <div className="grid gap-6 lg:grid-cols-3">
+            <div className="rounded-2xl border border-gray-200 shadow-sm bg-white p-4 flex min-h-[170px] items-center justify-center">
+              <img src={logoEnglish} alt="Arghya Trust English Logo" className="trust-logo-hover h-full max-h-40 w-full object-contain" />
             </div>
-            <div className="rounded-2xl border border-gray-200 shadow-sm bg-white p-4 flex justify-center">
-              <img src={logoKannada} alt="Arghya Trust Kannada Logo" className="w-full h-auto max-h-64 object-contain" />
+            <div className="rounded-2xl border border-gray-200 shadow-sm bg-white p-4 flex min-h-[170px] items-center justify-center">
+              <img src={logoKannada} alt="Arghya Trust Kannada Logo" className="trust-logo-hover h-full max-h-40 w-full object-contain" />
             </div>
-          </div>
-
-          <div className="rounded-2xl border border-gray-200 shadow-sm bg-white p-4 flex justify-center">
-            <img src={logoMeaning} alt="Logo Meaning" className="w-full h-auto max-h-64 object-contain" />
+            <div className="rounded-2xl border border-gray-200 shadow-sm bg-white p-4 flex min-h-[170px] items-center justify-center">
+              <img src={logoMeaning} alt="Arghya Trust logo symbolism for self-excellence sustainability and spirituality" className="trust-logo-hover h-full max-h-36 w-full object-contain" />
+            </div>
           </div>
         </div>
       </Section>
@@ -245,6 +285,7 @@ export function AboutPage() {
         title={t('about.journey')}
         centered
         background="white"
+        className={transparentSectionClass}
       >
         <div className="max-w-3xl mx-auto">
           {milestones.map((milestone, index) => (
@@ -279,6 +320,7 @@ export function AboutPage() {
         title={t('about.team')}
         centered
         background="gray"
+        className={transparentSectionClass}
       >
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto justify-items-stretch">
           {team.map((member, index) => (
@@ -319,41 +361,23 @@ export function AboutPage() {
 
       
       {/* Founder Feature */}
-      <Section centered background="white">
-        <div className="bg-gray-100/80 rounded-3xl shadow-md border border-gray-200 p-6 md:p-10">
+      <Section centered background="white" className={transparentSectionClass}>
+        <div className="rounded-3xl p-6 md:p-10">
           <div className="text-center mb-8">
-            <h2 className="text-3xl md:text-4xl font-extrabold text-[#123c7c]">Sri Ranjan Bellarpady</h2>
+            <h2 className="text-3xl md:text-4xl font-bold text-[#123c7c]">Sri Ranjan Bellarpady</h2>
             <p className="text-lg text-gray-700 font-semibold">Founder & Managing Trustee</p>
           </div>
 
-          <div className="grid lg:grid-cols-3 gap-6 items-stretch">
-            <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-4 flex flex-col">
+          <div className="grid lg:grid-cols-[0.85fr_1.3fr_0.85fr] gap-6 items-stretch">
+            <div className="h-full w-full max-w-[320px] mx-auto">
               <img
                 src={founderImage}
                 alt="Sri Ranjan Bellarpady"
-                className="w-full h-full object-cover rounded-xl flex-1"
+                className="w-full h-full object-cover rounded-xl border-2 border-[#50b94b] transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
               />
             </div>
 
-            <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 md:p-8 flex flex-col justify-center">
-              <div className="flex justify-center gap-2 mb-4">
-                <button
-                  onClick={() => language !== 'en' && toggleLanguage()}
-                  className={`px-3 py-1 rounded-full text-sm font-semibold border ${
-                    language === 'en' ? 'bg-red-100 text-red-700 border-red-200' : 'bg-white text-gray-700 border-gray-200'
-                  }`}
-                >
-                  English
-                </button>
-                <button
-                  onClick={() => language !== 'kn' && toggleLanguage()}
-                  className={`px-3 py-1 rounded-full text-sm font-semibold border ${
-                    language === 'kn' ? 'bg-gray-200 text-gray-800 border-gray-300' : 'bg-white text-gray-700 border-gray-200'
-                  }`}
-                >
-                  ಕನ್ನಡ
-                </button>
-              </div>
+            <div className="p-4 md:p-6 lg:px-2 flex flex-col justify-center">
               <div className="text-center space-y-4 text-gray-800">
                 <p>
                   <span className="font-semibold">Sri Ranjan Bellarpady</span> is a transformative leader committed to nation-building through the principles of Self-excellence, Sustainability, and Spirituality (3S).
@@ -370,16 +394,16 @@ export function AboutPage() {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              {[work1, work2, work3, work4, work5, work6].map((img, idx) => (
+            <div className="grid grid-cols-1 gap-4">
+              {[work1, work2, work3].map((img, idx) => (
                 <div
                   key={idx}
-                  className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden"
-                  style={{ width: '100%', aspectRatio: '1360 / 1250' }}
+                  className="bg-white rounded-xl border-2 border-[#50b94b] shadow-sm overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
+                  style={{ width: '100%', aspectRatio: '4 / 3' }}
                 >
                   <img
                     src={img}
-                    alt={`Work ${idx + 1}`}
+                    alt={`Arghya Trust community impact activity ${idx + 1}`}
                     className="w-full h-full object-cover"
                   />
                 </div>
@@ -393,6 +417,7 @@ export function AboutPage() {
         title="Team"
         centered
         background="white"
+        className={transparentSectionClass}
       >
         <div className="max-w-6xl mx-auto">
           <Card className="about-card p-6 text-center hover:shadow-xl transition-all flex flex-col h-full max-w-sm mx-auto">
@@ -427,6 +452,7 @@ export function AboutPage() {
         title={t('about.values')}
         centered
         background="white"
+        className={transparentSectionClass}
       >
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {values.map((value, index) => (
@@ -439,11 +465,11 @@ export function AboutPage() {
             >
           <Card className="about-card p-6 hover:shadow-lg transition-all border-l-4 border-[#50b94b]">
               <div className="flex items-start gap-4">
-                <div className="w-14 h-14 rounded-lg bg-green-50 flex items-center justify-center flex-shrink-0 overflow-hidden">
+                <div className="w-16 h-16 rounded-full bg-white flex items-center justify-center flex-shrink-0 overflow-hidden border border-green-100">
                   <img
                     src={value.image}
                     alt={t(value.titleKey)}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-contain"
                     loading="lazy"
                   />
                 </div>
