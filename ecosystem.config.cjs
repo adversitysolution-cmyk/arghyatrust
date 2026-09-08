@@ -8,7 +8,7 @@ module.exports = {
       cwd: path.join(__dirname, 'AT'),
       env: {
         NODE_ENV: 'production',
-        PORT: '5000',
+        PORT: process.env.PORT || '5050',
       },
     },
   ],
