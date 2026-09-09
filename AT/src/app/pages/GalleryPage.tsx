@@ -4,6 +4,12 @@ import { ArrowLeft } from 'lucide-react';
 import sectionBackground from '../../assets/back.jpg';
 import { getPublicGallery, type PublicGalleryImage } from '../lib/api';
 import { useLanguage } from '../contexts/LanguageContext';
+import defaultG1 from '../../assets/G1.jpg';
+import defaultG2 from '../../assets/G2.jpg';
+import defaultG3 from '../../assets/G3.jpg';
+import defaultG4 from '../../assets/G4.jpg';
+import defaultF1 from '../../assets/F1.jpg';
+import defaultF2 from '../../assets/F2.jpg';
 
 const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000').replace(/\/$/, '');
 
@@ -13,6 +19,21 @@ type GalleryItem = {
   coverImage: string;
   images: string[];
 };
+
+const fallbackGalleries: GalleryItem[] = [
+  {
+    id: 'fallback-1',
+    title: 'Spiritual Events & Yagnas',
+    coverImage: defaultG1,
+    images: [defaultG1, defaultG2, defaultG3, defaultG4],
+  },
+  {
+    id: 'fallback-2',
+    title: 'Community Outreach & Volunteer Programs',
+    coverImage: defaultF1,
+    images: [defaultF1, defaultF2, defaultG2],
+  },
+];
 
 function normalizeMediaUrl(url?: string) {
   if (!url) return '';
@@ -126,9 +147,11 @@ export function GalleryPage() {
   const [galleryPrograms, setGalleryPrograms] = useState<PublicGalleryImage[]>([]);
   const [selectedGallery, setSelectedGallery] = useState<GalleryItem | null>(null);
   const [lightboxImage, setLightboxImage] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     let mounted = true;
+    setIsLoading(true);
     getPublicGallery()
       .then((items) => {
         if (!mounted) return;
@@ -137,6 +160,9 @@ export function GalleryPage() {
       .catch(() => {
         if (!mounted) return;
         setGalleryPrograms([]);
+      })
+      .finally(() => {
+        if (mounted) setIsLoading(false);
       });
     return () => {
       mounted = false;
@@ -144,7 +170,7 @@ export function GalleryPage() {
   }, []);
 
   const galleries = useMemo<GalleryItem[]>(() => {
-    return galleryPrograms
+    const list = galleryPrograms
       .map((item) => {
         const coverImage = normalizeMediaUrl(item.mainImageUrl || item.url);
         const related = (item.relatedImages || []).map((img) => normalizeMediaUrl(img)).filter(Boolean);
@@ -157,6 +183,8 @@ export function GalleryPage() {
         };
       })
       .filter((item) => item.coverImage);
+
+    return list.length > 0 ? list : fallbackGalleries;
   }, [galleryPrograms]);
 
   const pageBackgroundStyle = {
