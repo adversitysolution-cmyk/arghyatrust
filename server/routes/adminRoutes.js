@@ -61,7 +61,7 @@ router.post(
   requireAdminAuth,
   galleryUpload.fields([
     { name: 'mainImage', maxCount: 1 },
-    { name: 'relatedImages', maxCount: 20 },
+    { name: 'relatedImages', maxCount: 50 },
   ]),
   uploadAdminGallery,
 );
@@ -70,7 +70,7 @@ router.put(
   requireAdminAuth,
   galleryUpload.fields([
     { name: 'mainImage', maxCount: 1 },
-    { name: 'relatedImages', maxCount: 20 },
+    { name: 'relatedImages', maxCount: 50 },
   ]),
   uploadAdminGalleryUpdate,
 );

@@ -105,8 +105,20 @@ if (isProduction) {
 }
 
 app.use((err, _req, res, _next) => {
-  console.error(err);
-  res.status(500).json({ error: 'Internal server error' });
+  console.error('Express Error:', err);
+  if (err?.name === 'MulterError') {
+    if (err.code === 'LIMIT_FILE_SIZE') {
+      return res.status(400).json({ error: 'File too large. Maximum file size allowed is 30MB.' });
+    }
+    if (err.code === 'LIMIT_UNEXPECTED_FILE' || err.code === 'LIMIT_FILE_COUNT') {
+      return res.status(400).json({ error: 'Too many files selected. Maximum is 50 photos per album.' });
+    }
+    return res.status(400).json({ error: err.message || 'File upload error' });
+  }
+
+  const status = Number.isInteger(err?.status) ? err.status : 500;
+  const message = typeof err?.message === 'string' ? err.message : 'Internal server error';
+  return res.status(status).json({ error: message });
 });
 
 async function wait(ms) {

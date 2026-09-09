@@ -45,8 +45,8 @@ export const galleryUpload = multer({
   storage: galleryStorage,
   fileFilter: storageFileFilter,
   limits: {
-    fileSize: 5 * 1024 * 1024,
-    files: 12,
+    fileSize: 30 * 1024 * 1024,
+    files: 50,
   },
 });
 
@@ -54,7 +54,7 @@ export const blogUpload = multer({
   storage: blogStorage,
   fileFilter: storageFileFilter,
   limits: {
-    fileSize: 5 * 1024 * 1024,
-    files: 1,
+    fileSize: 30 * 1024 * 1024,
+    files: 5,
   },
 });
