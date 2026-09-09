@@ -76,8 +76,8 @@ export function LoginPage({ onLogin }: LoginPageProps) {
               </Button>
             </form>
 
-            <p className="mt-6 rounded-xl border border-[#c8dccf] bg-[#eff7f2] px-4 py-3 text-sm text-[#325544]">
-              Demo login: <span className="font-semibold">admin / admin123</span>
+            <p className="mt-6 rounded-xl border border-[#c8dccf] bg-[#eff7f2] px-4 py-3 text-center text-xs text-[#325544]">
+              Protected Administrator Portal &bull; Arghya Trust
             </p>
           </div>
         </section>

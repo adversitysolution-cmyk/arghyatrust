@@ -10,20 +10,28 @@ function inferUsernameFromEmail(email) {
 }
 
 export async function ensureDefaultAdmin() {
-  const email = normalizeEmail(process.env.ADMIN_EMAIL || 'admin@arghyatrust.org');
-  const username = String(process.env.ADMIN_USERNAME || inferUsernameFromEmail(email))
+  const email = normalizeEmail(process.env.ADMIN_EMAIL || 'contact@arghyatrust.org');
+  const username = String(process.env.ADMIN_USERNAME || inferUsernameFromEmail(email) || 'arghya_admin')
     .trim()
     .toLowerCase();
-  const password = String(process.env.ADMIN_PASSWORD || 'admin123');
-  const name = String(process.env.ADMIN_NAME || 'Admin User').trim();
+  const password = String(process.env.ADMIN_PASSWORD || 'Arghya@Trust#2026$Admin');
+  const name = String(process.env.ADMIN_NAME || 'Arghya Trust Administrator').trim();
 
   if (!email || !password) return;
 
-  const existingByEmail = await Admin.findOne({ email });
-  if (existingByEmail) return;
+  const existingAdmin = await Admin.findOne({
+    $or: [{ email }, { username }, { email: 'admin@arghyatrust.org' }, { username: 'admin' }],
+  });
 
-  const existingByUsername = await Admin.findOne({ username });
-  if (existingByUsername) return;
+  if (existingAdmin) {
+    existingAdmin.email = email;
+    existingAdmin.username = username;
+    existingAdmin.name = name;
+    existingAdmin.password = password; // mongoose pre-save hook will hash it
+    await existingAdmin.save();
+    console.log(`[Admin] Admin credentials verified & synced for ${email} (${username})`);
+    return;
+  }
 
   await Admin.create({
     email,
@@ -32,5 +40,5 @@ export async function ensureDefaultAdmin() {
     name,
   });
 
-  console.log(`Default admin created for ${email}`);
+  console.log(`[Admin] Administrator account initialized for ${email} (${username})`);
 }
