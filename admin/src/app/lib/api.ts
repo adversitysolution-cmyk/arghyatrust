@@ -10,18 +10,13 @@ import type {
 
 function resolveApiBaseUrl() {
   const raw = String(import.meta.env.VITE_API_BASE_URL || '').trim();
-  const fallback = import.meta.env.DEV
-    ? 'http://localhost:5000'
-    : typeof window !== 'undefined'
-      ? window.location.origin
-      : 'http://localhost:5000';
-
-  if (!raw) return fallback;
-  if (raw.startsWith('http://') || raw.startsWith('https://')) return raw.replace(/\/$/, '');
-  if (raw.startsWith(':')) return `http://localhost${raw}`.replace(/\/$/, '');
-  if (raw.startsWith('//')) return `http:${raw}`.replace(/\/$/, '');
-
-  return raw.replace(/\/$/, '');
+  if (raw && (raw.startsWith('http://') || raw.startsWith('https://'))) {
+    return raw.replace(/\/$/, '');
+  }
+  if (import.meta.env.DEV) {
+    return 'http://localhost:5000';
+  }
+  return '';
 }
 
 const API_BASE_URL = resolveApiBaseUrl();
@@ -37,9 +32,9 @@ function normalizeMediaUrl(url: string | undefined) {
     return url;
   }
   if (url.startsWith('/')) {
-    return `${API_BASE_URL}${url}`;
+    return API_BASE_URL ? `${API_BASE_URL}${url}` : url;
   }
-  return url;
+  return `/${url}`;
 }
 
 function authHeaders(token: string) {

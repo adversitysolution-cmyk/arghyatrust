@@ -5,7 +5,7 @@ import sectionBackground from '../../assets/back.jpg';
 import { getPublicGallery, type PublicGalleryImage } from '../lib/api';
 import { useLanguage } from '../contexts/LanguageContext';
 
-const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000').replace(/\/$/, '');
+const API_BASE_URL = import.meta.env.DEV ? 'http://localhost:5000' : '';
 
 type GalleryItem = {
   id: string;
@@ -17,8 +17,8 @@ type GalleryItem = {
 function normalizeMediaUrl(url?: string) {
   if (!url) return '';
   if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:')) return url;
-  if (url.startsWith('/')) return `${API_BASE_URL}${url}`;
-  return url;
+  if (url.startsWith('/')) return API_BASE_URL ? `${API_BASE_URL}${url}` : url;
+  return `/${url}`;
 }
 
 function GalleryCard({ item, onClick }: { item: GalleryItem; onClick: () => void }) {
