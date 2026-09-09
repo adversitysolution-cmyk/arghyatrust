@@ -22,21 +22,35 @@ function normalizeMediaUrl(url?: string) {
 }
 
 function GalleryCard({ item, onClick }: { item: GalleryItem; onClick: () => void }) {
+  const photoCount = item.images?.length || 1;
   return (
     <button
       type="button"
       onClick={onClick}
-      className="w-full overflow-hidden rounded-2xl bg-white text-left shadow-sm transition-all duration-300 hover:scale-[1.01] hover:shadow-lg"
+      className="group w-full overflow-hidden rounded-2xl bg-white text-left shadow-sm transition-all duration-300 hover:scale-[1.02] hover:shadow-xl border border-gray-100"
     >
-      <div className="relative aspect-[4/3] overflow-hidden">
+      <div className="relative aspect-[4/3] overflow-hidden bg-gray-100">
         <img
           src={item.coverImage}
           alt={item.title}
-          className="h-full w-full object-cover transition-transform duration-300 hover:scale-105"
+          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
           loading="lazy"
         />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
+          <span className="text-white text-xs font-semibold">View Album →</span>
+        </div>
+        <span className="absolute top-3 left-3 bg-black/60 backdrop-blur-sm text-white text-xs font-medium px-2.5 py-1 rounded-full shadow-sm">
+          {photoCount} {photoCount === 1 ? 'photo' : 'photos'}
+        </span>
       </div>
-      <div className="p-4 text-sm font-semibold text-[#153A75]">{item.title}</div>
+      <div className="p-4">
+        <h3 className="text-base font-bold text-[#153A75] group-hover:text-[#4CAF50] transition-colors line-clamp-1">
+          {item.title}
+        </h3>
+        <p className="text-xs text-gray-500 mt-1">
+          Click to explore {photoCount} {photoCount === 1 ? 'image' : 'images'}
+        </p>
+      </div>
     </button>
   );
 }
