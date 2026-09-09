@@ -392,6 +392,38 @@ export async function uploadGalleryImageProgram(
   return mapGallery(data);
 }
 
+export async function uploadGalleryImageUpdate(
+  token: string,
+  id: string,
+  payload: {
+    caption?: string;
+    mainImage?: File;
+    relatedImages?: File[];
+    existingRelatedImages?: string[];
+  },
+): Promise<GalleryImage> {
+  const formData = new FormData();
+  if (payload.caption !== undefined) formData.append('caption', payload.caption);
+  if (payload.mainImage) formData.append('mainImage', payload.mainImage);
+  if (payload.existingRelatedImages !== undefined) {
+    formData.append('existingRelatedImages', JSON.stringify(payload.existingRelatedImages));
+  }
+  if (payload.relatedImages && payload.relatedImages.length > 0) {
+    for (const file of payload.relatedImages) {
+      formData.append('relatedImages', file);
+    }
+  }
+
+  const response = await safeFetch(`${API_BASE_URL}/api/admin/gallery/${id}/upload`, {
+    method: 'PUT',
+    headers: { Authorization: `Bearer ${token}` },
+    body: formData,
+  });
+
+  const data = await parseResponse<any>(response);
+  return mapGallery(data);
+}
+
 export async function updateGalleryImage(
   token: string,
   id: string,

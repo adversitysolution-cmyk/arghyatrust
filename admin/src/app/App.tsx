@@ -28,6 +28,7 @@ import {
   getVolunteers,
   loginAdmin,
   uploadGalleryImageProgram,
+  uploadGalleryImageUpdate,
   updateBlogSubmission,
   updateContact,
   updateEvent,
@@ -370,6 +371,28 @@ export default function App() {
     }
   };
 
+  const handleUpdateAlbum = async (
+    id: string,
+    payload: {
+      caption?: string;
+      mainImage?: File;
+      relatedImages?: File[];
+      existingRelatedImages?: string[];
+    },
+  ) => {
+    try {
+      const token = requireToken();
+      const updated = await uploadGalleryImageUpdate(token, id, payload);
+      setGalleryImages((prev) => prev.map((img) => (img.id === id ? updated : img)));
+      toast.success('Album updated successfully');
+      return updated;
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Failed to update album';
+      toast.error(message);
+      throw error;
+    }
+  };
+
   const handleUpdateBlogSubmission = async (
     id: string,
     payload: {
@@ -539,6 +562,7 @@ export default function App() {
             onAddImage={handleAddImage}
             onDeleteImage={handleDeleteImage}
             onUpdateCaption={handleUpdateCaption}
+            onUpdateAlbum={handleUpdateAlbum}
           />
         );
       case 'blogs':

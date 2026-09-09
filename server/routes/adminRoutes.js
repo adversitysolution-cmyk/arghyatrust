@@ -22,6 +22,7 @@ import {
   updateAdminRegistration,
   updateAdminSubscriber,
   updateAdminGallery,
+  uploadAdminGalleryUpdate,
 } from '../controllers/adminController.js';
 import { requireAdminAuth } from '../middleware/auth.js';
 import { galleryUpload } from '../middleware/upload.js';
@@ -60,9 +61,18 @@ router.post(
   requireAdminAuth,
   galleryUpload.fields([
     { name: 'mainImage', maxCount: 1 },
-    { name: 'relatedImages', maxCount: 10 },
+    { name: 'relatedImages', maxCount: 20 },
   ]),
   uploadAdminGallery,
+);
+router.put(
+  '/admin/gallery/:id/upload',
+  requireAdminAuth,
+  galleryUpload.fields([
+    { name: 'mainImage', maxCount: 1 },
+    { name: 'relatedImages', maxCount: 20 },
+  ]),
+  uploadAdminGalleryUpdate,
 );
 router.post('/admin/gallery', requireAdminAuth, createAdminGallery);
 router.put('/admin/gallery/:id', requireAdminAuth, updateAdminGallery);

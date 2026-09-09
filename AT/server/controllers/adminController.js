@@ -532,6 +532,55 @@ export async function uploadAdminGallery(req, res, next) {
   }
 }
 
+export async function uploadAdminGalleryUpdate(req, res, next) {
+  try {
+    const id = parseObjectId(req.params.id);
+    if (!id) return res.status(400).json({ error: 'Invalid album id' });
+
+    const existingDoc = await GalleryImage.findById(id);
+    if (!existingDoc) return res.status(404).json({ error: 'Album not found' });
+
+    const caption = req.body?.caption !== undefined ? String(req.body.caption).trim() : existingDoc.caption;
+    const sortOrder = Number.isFinite(Number(req.body?.sortOrder)) ? Number(req.body.sortOrder) : existingDoc.sortOrder;
+    const files = req.files || {};
+    const mainImageFile = files.mainImage?.[0];
+    const relatedImageFiles = Array.isArray(files.relatedImages) ? files.relatedImages : [];
+
+    let mainImageUrl = existingDoc.mainImageUrl || existingDoc.url;
+    if (mainImageFile) {
+      mainImageUrl = `/uploads/gallery/${mainImageFile.filename}`;
+    }
+
+    let currentRelated = Array.isArray(existingDoc.relatedImages) ? [...existingDoc.relatedImages] : [];
+    if (req.body?.existingRelatedImages !== undefined) {
+      try {
+        currentRelated = typeof req.body.existingRelatedImages === 'string'
+          ? JSON.parse(req.body.existingRelatedImages)
+          : req.body.existingRelatedImages;
+      } catch (_e) {
+        if (Array.isArray(req.body.existingRelatedImages)) {
+          currentRelated = req.body.existingRelatedImages;
+        }
+      }
+    }
+
+    const newRelatedUrls = relatedImageFiles.map((f) => `/uploads/gallery/${f.filename}`);
+    const finalRelatedImages = [...(Array.isArray(currentRelated) ? currentRelated : []), ...newRelatedUrls];
+
+    existingDoc.caption = caption || existingDoc.caption;
+    existingDoc.mainImageUrl = mainImageUrl;
+    existingDoc.url = mainImageUrl;
+    existingDoc.relatedImages = finalRelatedImages;
+    existingDoc.sortOrder = sortOrder;
+
+    await existingDoc.save();
+
+    return res.json({ ok: true, data: normalizeGalleryDoc(existingDoc.toObject()) });
+  } catch (error) {
+    return next(error);
+  }
+}
+
 export async function updateAdminGallery(req, res, next) {
   try {
     const id = parseObjectId(req.params.id);
