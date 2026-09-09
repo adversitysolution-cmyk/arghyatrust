@@ -1,4 +1,4 @@
-import { type FormEvent, useMemo, useState } from 'react';
+import { type FormEvent, useMemo, useState, useEffect } from 'react';
 import { Plus, Trash2, Upload, Search, Edit3, Eye, Image as ImageIcon, X } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
@@ -57,18 +57,68 @@ export function GalleryManagementPage({
   // Add Album State
   const [newImageCaption, setNewImageCaption] = useState('');
   const [mainImageFile, setMainImageFile] = useState<File | null>(null);
+  const [mainImagePreview, setMainImagePreview] = useState<string | null>(null);
   const [relatedImageFiles, setRelatedImageFiles] = useState<File[]>([]);
+  const [relatedPreviews, setRelatedPreviews] = useState<{ file: File; url: string }[]>([]);
 
   // Edit Album State
   const [editingAlbum, setEditingAlbum] = useState<GalleryImage | null>(null);
   const [editCaption, setEditCaption] = useState('');
   const [editCoverFile, setEditCoverFile] = useState<File | null>(null);
+  const [editCoverPreview, setEditCoverPreview] = useState<string | null>(null);
   const [editNewRelatedFiles, setEditNewRelatedFiles] = useState<File[]>([]);
+  const [editNewRelatedPreviews, setEditNewRelatedPreviews] = useState<{ file: File; url: string }[]>([]);
   const [editExistingRelated, setEditExistingRelated] = useState<string[]>([]);
   const [isSavingEdit, setIsSavingEdit] = useState(false);
 
   // Inline Quick Caption Edit
   const [editingCaption, setEditingCaption] = useState<{ id: string; caption: string } | null>(null);
+
+  // Sync previews for Add Modal Main Image
+  useEffect(() => {
+    if (!mainImageFile) {
+      setMainImagePreview(null);
+      return;
+    }
+    const url = URL.createObjectURL(mainImageFile);
+    setMainImagePreview(url);
+    return () => URL.revokeObjectURL(url);
+  }, [mainImageFile]);
+
+  // Sync previews for Add Modal Related Images
+  useEffect(() => {
+    const list = relatedImageFiles.map((file) => ({
+      file,
+      url: URL.createObjectURL(file),
+    }));
+    setRelatedPreviews(list);
+    return () => {
+      list.forEach((item) => URL.revokeObjectURL(item.url));
+    };
+  }, [relatedImageFiles]);
+
+  // Sync previews for Edit Modal Cover File
+  useEffect(() => {
+    if (!editCoverFile) {
+      setEditCoverPreview(null);
+      return;
+    }
+    const url = URL.createObjectURL(editCoverFile);
+    setEditCoverPreview(url);
+    return () => URL.revokeObjectURL(url);
+  }, [editCoverFile]);
+
+  // Sync previews for Edit Modal New Related Files
+  useEffect(() => {
+    const list = editNewRelatedFiles.map((file) => ({
+      file,
+      url: URL.createObjectURL(file),
+    }));
+    setEditNewRelatedPreviews(list);
+    return () => {
+      list.forEach((item) => URL.revokeObjectURL(item.url));
+    };
+  }, [editNewRelatedFiles]);
 
   const handleAddImage = (e: FormEvent) => {
     e.preventDefault();
@@ -88,6 +138,7 @@ export function GalleryManagementPage({
     setEditingAlbum(album);
     setEditCaption(album.caption);
     setEditCoverFile(null);
+    setEditCoverPreview(null);
     setEditNewRelatedFiles([]);
     setEditExistingRelated(album.relatedImages || []);
     setIsEditModalOpen(true);
@@ -95,6 +146,14 @@ export function GalleryManagementPage({
 
   const handleRemoveExistingPhoto = (indexToRemove: number) => {
     setEditExistingRelated((prev) => prev.filter((_, idx) => idx !== indexToRemove));
+  };
+
+  const handleRemoveNewRelatedFile = (indexToRemove: number) => {
+    setEditNewRelatedFiles((prev) => prev.filter((_, idx) => idx !== indexToRemove));
+  };
+
+  const handleRemoveAddRelatedFile = (indexToRemove: number) => {
+    setRelatedImageFiles((prev) => prev.filter((_, idx) => idx !== indexToRemove));
   };
 
   const handleSaveAlbumEdit = async (e: FormEvent) => {
@@ -118,7 +177,6 @@ export function GalleryManagementPage({
         setIsSavingEdit(false);
       }
     } else {
-      // Fallback
       onUpdateCaption(editingAlbum.id, editCaption.trim());
       setIsEditModalOpen(false);
       setEditingAlbum(null);
@@ -184,7 +242,7 @@ export function GalleryManagementPage({
           Click here to create a new gallery album with cover photo & multiple photos
         </p>
         <span className="inline-block text-xs font-medium text-[#4CAF50] bg-[#4CAF50]/10 px-3 py-1 rounded-full">
-          Supports JPG, PNG, WEBP
+          Supports JPG, PNG, WEBP, GIF
         </span>
       </div>
 
@@ -334,11 +392,11 @@ export function GalleryManagementPage({
 
       {/* 1. CREATE NEW ALBUM MODAL */}
       <Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
-        <DialogContent className="rounded-2xl max-w-lg">
+        <DialogContent className="rounded-2xl max-w-xl max-h-[88vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Create New Gallery Album</DialogTitle>
             <DialogDescription>
-              Set the album title, upload the primary cover photo, and optionally attach additional photos.
+              Set the album title, upload the primary cover photo, and attach additional photos.
             </DialogDescription>
           </DialogHeader>
           <form onSubmit={handleAddImage} className="space-y-4 mt-3">
@@ -354,38 +412,105 @@ export function GalleryManagementPage({
               />
             </div>
 
-            <div>
-              <Label htmlFor="add-mainImage">Main Cover Photo *</Label>
+            {/* Main Cover Photo with Live Preview */}
+            <div className="p-4 bg-gray-50 rounded-xl border border-gray-100">
+              <Label htmlFor="add-mainImage" className="font-semibold text-gray-800 block mb-1">
+                Main Cover Photo *
+              </Label>
               <Input
                 id="add-mainImage"
                 type="file"
                 accept="image/*"
                 onChange={(e) => setMainImageFile(e.target.files?.[0] || null)}
-                className="mt-1 rounded-xl"
-                required
+                className="rounded-xl bg-white"
+                required={!mainImageFile}
               />
-              <p className="text-[11px] text-gray-500 mt-1">This photo will appear as the thumbnail on the public gallery.</p>
+              {mainImagePreview && mainImageFile ? (
+                <div className="mt-3 flex items-center gap-3 p-2 bg-white rounded-lg border border-gray-200">
+                  <img
+                    src={mainImagePreview}
+                    alt="Cover preview"
+                    className="w-16 h-16 rounded-md object-cover border border-gray-100"
+                  />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-semibold text-gray-800 truncate">{mainImageFile.name}</p>
+                    <p className="text-[11px] text-gray-400">{(mainImageFile.size / 1024).toFixed(1)} KB • Cover Photo</p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setMainImageFile(null)}
+                    className="text-red-500 hover:text-red-700 p-1"
+                    title="Remove cover photo"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+              ) : (
+                <p className="text-[11px] text-gray-500 mt-1">This photo appears as the thumbnail card on the website.</p>
+              )}
             </div>
 
-            <div>
-              <Label htmlFor="add-relatedImages">Additional Album Photos (optional)</Label>
+            {/* Additional Photos with Live Grid Preview */}
+            <div className="p-4 bg-gray-50 rounded-xl border border-gray-100">
+              <Label htmlFor="add-relatedImages" className="font-semibold text-gray-800 block mb-1">
+                Additional Album Photos (optional)
+              </Label>
               <Input
                 id="add-relatedImages"
                 type="file"
                 accept="image/*"
                 multiple
-                onChange={(e) => setRelatedImageFiles(Array.from(e.target.files || []))}
-                className="mt-1 rounded-xl"
+                onChange={(e) => {
+                  const newFiles = Array.from(e.target.files || []);
+                  setRelatedImageFiles((prev) => [...prev, ...newFiles]);
+                }}
+                className="rounded-xl bg-white"
               />
-              <p className="text-[11px] text-gray-500 mt-1">Select multiple images at once to include inside this album.</p>
+              
+              {relatedPreviews.length > 0 ? (
+                <div className="mt-3 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-semibold text-gray-700">
+                      Selected Photos Preview ({relatedPreviews.length}):
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setRelatedImageFiles([])}
+                      className="text-[11px] text-red-500 hover:underline"
+                    >
+                      Clear all
+                    </button>
+                  </div>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 max-h-48 overflow-y-auto p-1">
+                    {relatedPreviews.map((item, idx) => (
+                      <div key={idx} className="relative group rounded-lg overflow-hidden border border-gray-200 bg-white p-1">
+                        <img src={item.url} alt={item.file.name} className="w-full h-20 object-cover rounded" />
+                        <p className="text-[10px] text-gray-600 truncate mt-1 px-0.5" title={item.file.name}>
+                          {item.file.name}
+                        </p>
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveAddRelatedFile(idx)}
+                          className="absolute top-1.5 right-1.5 w-5 h-5 bg-red-600 text-white rounded-full flex items-center justify-center shadow hover:bg-red-700 transition-colors"
+                          title="Remove this photo"
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <p className="text-[11px] text-gray-500 mt-1">You can select multiple photos at once to attach inside this album.</p>
+              )}
             </div>
 
-            <div className="flex gap-3 pt-3">
+            <div className="flex gap-3 pt-2">
               <Button
                 type="submit"
-                className="flex-1 bg-[#4CAF50] hover:bg-[#45a049] text-white rounded-xl"
+                className="flex-1 bg-[#4CAF50] hover:bg-[#45a049] text-white rounded-xl font-semibold"
               >
-                Create Album
+                Create Album ({1 + relatedImageFiles.length} {1 + relatedImageFiles.length === 1 ? 'Photo' : 'Photos'})
               </Button>
               <Button
                 type="button"
@@ -400,13 +525,13 @@ export function GalleryManagementPage({
         </DialogContent>
       </Dialog>
 
-      {/* 2. EDIT ALBUM MODAL (Edit title, replace cover, delete individual photos, upload new photos) */}
+      {/* 2. EDIT ALBUM MODAL (Live preview of existing photos, new cover preview, and new photos preview with name) */}
       <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
         <DialogContent className="rounded-2xl max-w-2xl max-h-[85vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Edit Album: {editingAlbum?.caption}</DialogTitle>
             <DialogDescription>
-              Update album title, replace the cover photo, remove specific photos, or insert new images.
+              Update title, replace cover image, delete individual photos, or insert new photos.
             </DialogDescription>
           </DialogHeader>
 
@@ -424,45 +549,65 @@ export function GalleryManagementPage({
                 />
               </div>
 
-              {/* Cover Photo */}
+              {/* Cover Photo with Live Preview & File Name */}
               <div className="p-4 bg-gray-50 rounded-xl border border-gray-100">
                 <Label className="block mb-2 font-semibold text-gray-800">Cover Photo</Label>
-                <div className="flex items-center gap-4">
-                  <img
-                    src={editingAlbum.mainImageUrl || editingAlbum.url}
-                    alt="Current cover"
-                    className="w-20 h-20 rounded-lg object-cover border border-gray-200"
-                  />
+                <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+                  <div className="flex items-center gap-3">
+                    <div className="text-center">
+                      <img
+                        src={editCoverPreview || editingAlbum.mainImageUrl || editingAlbum.url}
+                        alt="Cover"
+                        className="w-20 h-20 rounded-lg object-cover border border-gray-200 shadow-sm"
+                      />
+                      <span className="text-[10px] text-gray-500 mt-1 block">
+                        {editCoverPreview ? 'New Preview' : 'Current'}
+                      </span>
+                    </div>
+                  </div>
+
                   <div className="flex-1">
                     <Label htmlFor="edit-cover" className="text-xs text-gray-600 block mb-1">
-                      Upload new photo to replace current cover (optional):
+                      Choose new cover photo (optional):
                     </Label>
                     <Input
                       id="edit-cover"
                       type="file"
                       accept="image/*"
                       onChange={(e) => setEditCoverFile(e.target.files?.[0] || null)}
-                      className="rounded-lg text-xs"
+                      className="rounded-lg text-xs bg-white"
                     />
+                    {editCoverFile ? (
+                      <div className="flex items-center justify-between mt-1.5 text-xs text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded">
+                        <span className="truncate font-medium">New: {editCoverFile.name}</span>
+                        <button
+                          type="button"
+                          onClick={() => setEditCoverFile(null)}
+                          className="text-red-500 hover:text-red-700 ml-2"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    ) : null}
                   </div>
                 </div>
               </div>
 
-              {/* Current Related Photos (With individual delete) */}
+              {/* Current Photos in Album with Individual Delete */}
               <div className="p-4 bg-gray-50 rounded-xl border border-gray-100">
                 <div className="flex items-center justify-between mb-2">
                   <Label className="font-semibold text-gray-800">
-                    Current Photos in Album ({editExistingRelated.length})
+                    Existing Album Photos ({editExistingRelated.length})
                   </Label>
-                  <span className="text-[11px] text-gray-500">Click ✕ to delete a photo</span>
+                  <span className="text-[11px] text-gray-500">Click ✕ on any photo to remove</span>
                 </div>
 
                 {editExistingRelated.length === 0 ? (
-                  <p className="text-xs text-gray-400 italic py-2">No additional photos attached to this album.</p>
+                  <p className="text-xs text-gray-400 italic py-2">No additional photos currently attached.</p>
                 ) : (
                   <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3 max-h-48 overflow-y-auto p-1">
                     {editExistingRelated.map((imgUrl, idx) => (
-                      <div key={idx} className="relative aspect-square rounded-lg overflow-hidden border border-gray-200 group bg-white">
+                      <div key={idx} className="relative aspect-square rounded-lg overflow-hidden border border-gray-200 group bg-white shadow-sm">
                         <img src={imgUrl} alt={`Photo ${idx + 1}`} className="w-full h-full object-cover" />
                         <button
                           type="button"
@@ -478,8 +623,8 @@ export function GalleryManagementPage({
                 )}
               </div>
 
-              {/* Insert / Upload New Photos into this Album */}
-              <div className="p-4 bg-emerald-50/50 rounded-xl border border-emerald-100">
+              {/* Insert / Upload New Photos with Live Thumbnail Grid & Names */}
+              <div className="p-4 bg-emerald-50/60 rounded-xl border border-emerald-100">
                 <Label htmlFor="edit-newPhotos" className="font-semibold text-emerald-900 block mb-1">
                   Insert New Photos into this Album
                 </Label>
@@ -488,14 +633,50 @@ export function GalleryManagementPage({
                   type="file"
                   accept="image/*"
                   multiple
-                  onChange={(e) => setEditNewRelatedFiles(Array.from(e.target.files || []))}
+                  onChange={(e) => {
+                    const newFiles = Array.from(e.target.files || []);
+                    setEditNewRelatedFiles((prev) => [...prev, ...newFiles]);
+                  }}
                   className="rounded-lg bg-white mt-1 text-xs"
                 />
-                <p className="text-[11px] text-emerald-700 mt-1">
-                  {editNewRelatedFiles.length > 0
-                    ? `${editNewRelatedFiles.length} new photo(s) selected to add.`
-                    : 'You can select multiple photos to append to this album.'}
-                </p>
+
+                {editNewRelatedPreviews.length > 0 ? (
+                  <div className="mt-3 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-semibold text-emerald-900">
+                        New Photos to Insert ({editNewRelatedPreviews.length}):
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => setEditNewRelatedFiles([])}
+                        className="text-[11px] text-red-500 hover:underline"
+                      >
+                        Clear all
+                      </button>
+                    </div>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5 max-h-48 overflow-y-auto p-1">
+                      {editNewRelatedPreviews.map((item, idx) => (
+                        <div key={idx} className="relative rounded-lg overflow-hidden border border-emerald-200 bg-white p-1 shadow-sm">
+                          <img src={item.url} alt={item.file.name} className="w-full h-20 object-cover rounded" />
+                          <p className="text-[10px] text-gray-700 truncate mt-1 px-0.5 font-medium" title={item.file.name}>
+                            {item.file.name}
+                          </p>
+                          <p className="text-[9px] text-gray-400 px-0.5">{(item.file.size / 1024).toFixed(1)} KB</p>
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveNewRelatedFile(idx)}
+                            className="absolute top-1.5 right-1.5 w-5 h-5 bg-red-600 text-white rounded-full flex items-center justify-center shadow hover:bg-red-700 transition-colors"
+                            title="Remove from upload"
+                          >
+                            <X className="w-3 h-3" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <p className="text-[11px] text-emerald-700 mt-1">Select one or more photos to append to this album.</p>
+                )}
               </div>
 
               {/* Save & Cancel */}
