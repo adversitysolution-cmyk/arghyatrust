@@ -4,12 +4,6 @@ import { ArrowLeft } from 'lucide-react';
 import sectionBackground from '../../assets/back.jpg';
 import { getPublicGallery, type PublicGalleryImage } from '../lib/api';
 import { useLanguage } from '../contexts/LanguageContext';
-import defaultG1 from '../../assets/G1.jpg';
-import defaultG2 from '../../assets/G2.jpg';
-import defaultG3 from '../../assets/G3.jpg';
-import defaultG4 from '../../assets/G4.jpg';
-import defaultF1 from '../../assets/F1.jpg';
-import defaultF2 from '../../assets/F2.jpg';
 
 const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000').replace(/\/$/, '');
 
@@ -19,21 +13,6 @@ type GalleryItem = {
   coverImage: string;
   images: string[];
 };
-
-const fallbackGalleries: GalleryItem[] = [
-  {
-    id: 'fallback-1',
-    title: 'Spiritual Events & Yagnas',
-    coverImage: defaultG1,
-    images: [defaultG1, defaultG2, defaultG3, defaultG4],
-  },
-  {
-    id: 'fallback-2',
-    title: 'Community Outreach & Volunteer Programs',
-    coverImage: defaultF1,
-    images: [defaultF1, defaultF2, defaultG2],
-  },
-];
 
 function normalizeMediaUrl(url?: string) {
   if (!url) return '';
@@ -157,7 +136,8 @@ export function GalleryPage() {
         if (!mounted) return;
         setGalleryPrograms(items);
       })
-      .catch(() => {
+      .catch((err) => {
+        console.error('Failed to load gallery albums:', err);
         if (!mounted) return;
         setGalleryPrograms([]);
       })
@@ -170,7 +150,7 @@ export function GalleryPage() {
   }, []);
 
   const galleries = useMemo<GalleryItem[]>(() => {
-    const list = galleryPrograms
+    return galleryPrograms
       .map((item) => {
         const coverImage = normalizeMediaUrl(item.mainImageUrl || item.url);
         const related = (item.relatedImages || []).map((img) => normalizeMediaUrl(img)).filter(Boolean);
@@ -183,8 +163,6 @@ export function GalleryPage() {
         };
       })
       .filter((item) => item.coverImage);
-
-    return list.length > 0 ? list : fallbackGalleries;
   }, [galleryPrograms]);
 
   const pageBackgroundStyle = {
@@ -206,8 +184,20 @@ export function GalleryPage() {
         background="white"
         className="!bg-transparent [&_.container]:max-w-[1500px]"
       >
-        {galleries.length === 0 ? (
-          <div className="text-center text-gray-600">{t('gallery.empty')}</div>
+        {isLoading ? (
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {[1, 2, 3].map((n) => (
+              <div key={n} className="w-full overflow-hidden rounded-2xl bg-white/70 backdrop-blur-sm p-4 animate-pulse shadow-sm">
+                <div className="aspect-[4/3] bg-gray-200 rounded-xl mb-3" />
+                <div className="h-4 bg-gray-200 rounded w-2/3" />
+              </div>
+            ))}
+          </div>
+        ) : galleries.length === 0 ? (
+          <div className="text-center text-gray-600 bg-white/80 backdrop-blur-sm rounded-2xl p-10 max-w-md mx-auto shadow-sm">
+            <p className="text-base font-semibold text-gray-800">{t('gallery.empty') || 'No gallery albums available yet.'}</p>
+            <p className="text-xs text-gray-500 mt-1">Upload albums in the Admin Panel to display them here.</p>
+          </div>
         ) : (
           <div className="transition-all duration-300">
             {!selectedGallery ? (
