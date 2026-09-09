@@ -5,6 +5,7 @@
   "scripts": {
     "install:all": "npm --prefix AT install && npm --prefix admin install",
     "dev": "concurrently -k -n api,site,admin -c cyan,green,yellow \"npm --prefix AT run server\" \"npm --prefix AT run dev -- --host 0.0.0.0 --port 5173 --strictPort\" \"npm --prefix admin run dev -- --host 0.0.0.0 --port 5174 --strictPort\"",
+    "dev:full": "concurrently -k -n api,site,admin -c cyan,green,yellow \"npm --prefix AT run server\" \"npm --prefix AT run dev -- --host 0.0.0.0 --port 5173 --strictPort\" \"npm --prefix admin run dev -- --host 0.0.0.0 --port 5174 --strictPort\"",
     "build": "npm --prefix AT run build && npm --prefix admin run build",
     "start": "npm --prefix AT run start"
   },
