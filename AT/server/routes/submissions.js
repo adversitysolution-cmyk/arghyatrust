@@ -154,22 +154,25 @@ router.get('/gallery', async (_req, res, next) => {
 });
 
 router.post('/admin/login', (req, res) => {
-  const { email, password } = req.body || {};
+  const { email, username, password } = req.body || {};
+  const loginId = String(email || username || '').trim().toLowerCase();
 
-  const adminEmail = process.env.ADMIN_EMAIL || 'admin@arghyatrust.org';
-  const adminPassword = process.env.ADMIN_PASSWORD || 'admin123';
-  const adminName = process.env.ADMIN_NAME || 'Admin User';
+  const adminEmail = String(process.env.ADMIN_EMAIL || 'contact@arghyatrust.org').trim().toLowerCase();
+  const adminUsername = String(process.env.ADMIN_USERNAME || 'arghya_admin').trim().toLowerCase();
+  const adminPassword = String(process.env.ADMIN_PASSWORD || 'Arghya@Trust#2026$Admin');
+  const adminName = process.env.ADMIN_NAME || 'Arghya Trust Administrator';
 
-  if (email !== adminEmail || password !== adminPassword) {
-    return res.status(401).json({ error: 'Invalid email or password' });
+  const matchesIdentifier = loginId === adminEmail || loginId === adminUsername;
+  if (!matchesIdentifier || password !== adminPassword) {
+    return res.status(401).json({ error: 'Invalid credentials' });
   }
 
-  const { token, expiresAt } = createAdminSession({ email, name: adminName });
+  const { token, expiresAt } = createAdminSession({ email: adminEmail, name: adminName });
   return res.json({
     ok: true,
     token,
     expiresAt,
-    admin: { email: adminEmail, name: adminName },
+    admin: { email: adminEmail, username: adminUsername, name: adminName },
   });
 });
 

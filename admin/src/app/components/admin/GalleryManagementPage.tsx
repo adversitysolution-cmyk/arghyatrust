@@ -279,21 +279,21 @@ export function GalleryManagementPage({
                   </div>
 
                   {/* Top Badge */}
-                  <span className="absolute top-2 left-2 bg-black/60 text-white text-[11px] font-medium px-2 py-0.5 rounded-md backdrop-blur-sm">
+                  <span className="absolute top-2 left-2 bg-black/70 text-white text-[11px] font-medium px-2 py-0.5 rounded-md backdrop-blur-sm shadow-sm">
                     {totalCount} {totalCount === 1 ? 'photo' : 'photos'}
                   </span>
 
-                  {/* Delete Button */}
+                  {/* Delete Button (Always Visible) */}
                   <button
                     type="button"
                     onClick={(e) => {
                       e.stopPropagation();
-                      if (window.confirm(`Are you sure you want to delete the album "${image.caption}"?`)) {
+                      if (window.confirm(`Are you sure you want to delete the album "${image.caption || 'Untitled Album'}"?`)) {
                         onDeleteImage(image.id);
                       }
                     }}
-                    className="absolute top-2 right-2 w-8 h-8 bg-red-600/90 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center hover:bg-red-700 z-10 shadow-sm"
-                    title="Delete entire album"
+                    className="absolute top-2 right-2 w-8 h-8 bg-red-600/90 hover:bg-red-700 text-white rounded-lg flex items-center justify-center transition-all z-10 shadow-md hover:scale-105"
+                    title="Delete this entire album"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
@@ -333,29 +333,44 @@ export function GalleryManagementPage({
                         {image.caption || 'Untitled Album'}
                       </h4>
                       <p className="text-xs text-gray-500 mt-1">
-                        Related: <b>{image.relatedImages?.length || 0}</b> additional photos
+                        <b>{image.relatedImages?.length || 0}</b> additional photos attached
                       </p>
                     </div>
                   )}
 
                   {/* Quick Action Buttons */}
-                  <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-100">
+                  <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-100 gap-1">
                     <button
                       type="button"
                       onClick={() => openEditModal(image)}
-                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-gray-600 hover:text-[#4CAF50] transition-colors"
+                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-gray-700 hover:text-[#2f7d46] bg-gray-50 hover:bg-green-50 px-2.5 py-1.5 rounded-lg transition-colors border border-gray-200"
                     >
-                      <Edit3 className="w-3.5 h-3.5" />
-                      Edit Album / Add Photos
+                      <Edit3 className="w-3.5 h-3.5 text-[#2f7d46]" />
+                      Edit / Add Photos
                     </button>
-                    <button
-                      type="button"
-                      onClick={() => setSelectedPreviewImage(image)}
-                      className="inline-flex items-center gap-1 text-xs font-semibold text-[#4CAF50] hover:underline"
-                    >
-                      <Eye className="w-3.5 h-3.5" />
-                      View
-                    </button>
+                    <div className="flex items-center gap-1">
+                      <button
+                        type="button"
+                        onClick={() => setSelectedPreviewImage(image)}
+                        className="inline-flex items-center gap-1 text-xs font-semibold text-[#2f7d46] hover:bg-green-50 px-2 py-1.5 rounded-lg transition-colors"
+                        title="View all photos in this album"
+                      >
+                        <Eye className="w-3.5 h-3.5" />
+                        View
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (window.confirm(`Delete album "${image.caption || 'Untitled'}"?`)) {
+                            onDeleteImage(image.id);
+                          }
+                        }}
+                        className="inline-flex items-center text-xs text-red-600 hover:bg-red-50 p-1.5 rounded-lg transition-colors"
+                        title="Delete album"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -719,19 +734,36 @@ export function GalleryManagementPage({
                 </DialogDescription>
               </div>
               {selectedPreviewImage ? (
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => {
-                    const current = selectedPreviewImage;
-                    setSelectedPreviewImage(null);
-                    openEditModal(current);
-                  }}
-                  className="rounded-xl flex items-center gap-1 text-xs border-[#4CAF50] text-[#4CAF50] hover:bg-[#4CAF50]/10"
-                >
-                  <Edit3 className="w-3.5 h-3.5" />
-                  Edit Album
-                </Button>
+                <div className="flex items-center gap-2">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => {
+                      const current = selectedPreviewImage;
+                      setSelectedPreviewImage(null);
+                      openEditModal(current);
+                    }}
+                    className="rounded-xl flex items-center gap-1 text-xs border-[#2f7d46] text-[#2f7d46] hover:bg-green-50"
+                  >
+                    <Edit3 className="w-3.5 h-3.5" />
+                    Edit Album
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => {
+                      const current = selectedPreviewImage;
+                      if (window.confirm(`Are you sure you want to delete the album "${current.caption || 'Untitled'}"?`)) {
+                        setSelectedPreviewImage(null);
+                        onDeleteImage(current.id);
+                      }
+                    }}
+                    className="rounded-xl flex items-center gap-1 text-xs border-red-300 text-red-600 hover:bg-red-50"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                    Delete Album
+                  </Button>
+                </div>
               ) : null}
             </div>
           </DialogHeader>
