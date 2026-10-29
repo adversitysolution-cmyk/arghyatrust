@@ -9,6 +9,7 @@ interface SectionProps {
   style?: CSSProperties;
   eyebrow?: string;
   title?: string;
+  titleAs?: 'h1' | 'h2' | 'h3';
   description?: string;
   centered?: boolean;
   background?: 'white' | 'gray' | 'green';
@@ -20,6 +21,7 @@ export function Section({
   style,
   eyebrow,
   title,
+  titleAs = 'h2',
   description,
   centered = false,
   background = 'white',
@@ -32,6 +34,8 @@ export function Section({
     gray: 'bg-gray-50',
     green: 'bg-gradient-to-br from-green-50 to-white',
   }[background];
+
+  const TitleTag = titleAs;
 
   return (
     <section ref={ref} style={style} className={`py-[50px] md:py-[80px] ${bgClass} ${className}`}>
@@ -49,9 +53,9 @@ export function Section({
               </span>
             )}
             {title && (
-              <h2 className="text-3xl md:text-4xl font-semibold text-gray-900 mb-4">
+              <TitleTag className="text-3xl md:text-4xl font-semibold text-gray-900 mb-4">
                 {title}
-              </h2>
+              </TitleTag>
             )}
             {description && (
               <p className="text-base md:text-lg text-gray-600 leading-relaxed">

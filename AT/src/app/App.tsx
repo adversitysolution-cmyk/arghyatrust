@@ -11,6 +11,7 @@ import { BlogDetailPage } from './pages/BlogDetailPage';
 import { BlogSubmitPage } from './pages/BlogSubmitPage';
 import { ContactPage } from './pages/ContactPage';
 import { GalleryPage } from './pages/GalleryPage';
+import { NotFoundPage } from './pages/NotFoundPage';
 import { Toaster } from './components/ui/sonner';
 import { useEffect } from 'react';
 import { SeoManager } from './components/SeoManager';
@@ -44,6 +45,7 @@ export default function App() {
               <Route path="/blog/submit" element={<BlogSubmitPage />} />
               <Route path="/blog/:slug" element={<BlogDetailPage />} />
               <Route path="/contact" element={<ContactPage />} />
+              <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </main>
           <Footer />
