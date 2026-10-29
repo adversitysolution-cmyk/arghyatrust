@@ -1,0 +1,22 @@
+{
+  "name": "Arghya Trust",
+  "short_name": "Arghya Trust",
+  "description": "Empowering communities through Self-Excellence, Sustainability, and Spirituality across Karnataka.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#50b94b",
+  "icons": [
+    {
+      "src": "/favicon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
+

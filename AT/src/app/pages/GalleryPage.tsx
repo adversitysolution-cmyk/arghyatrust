@@ -189,10 +189,10 @@ export function GalleryPage() {
 
   return (
     <div className="min-h-screen pt-20" style={pageBackgroundStyle}>
-      <h1 className="sr-only">Arghya Trust Gallery</h1>
       <Section
         eyebrow={t('gallery.eyebrow')}
         title={t('gallery.title')}
+        titleAs="h1"
         description={t('gallery.description')}
         centered
         background="white"
